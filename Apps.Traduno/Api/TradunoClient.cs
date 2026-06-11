@@ -1,4 +1,4 @@
-using Apps.Appname.Constants;
+using Apps.Traduno.Constants;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Exceptions;
 using Blackbird.Applications.Sdk.Utils.Extensions.Sdk;
@@ -6,11 +6,11 @@ using Blackbird.Applications.Sdk.Utils.RestSharp;
 using Newtonsoft.Json;
 using RestSharp;
 
-namespace Apps.Appname.Api;
+namespace Apps.Traduno.Api;
 
-public class Client : BlackBirdRestClient
+public class TradunoClient : BlackBirdRestClient
 {
-    public Client(IEnumerable<AuthenticationCredentialsProvider> creds) : base(new()
+    public TradunoClient(IEnumerable<AuthenticationCredentialsProvider> creds) : base(new()
     {
         BaseUrl = new Uri(""),
     })

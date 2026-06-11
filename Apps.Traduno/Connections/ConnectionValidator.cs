@@ -1,11 +1,11 @@
-﻿using Apps.Appname.Api;
+using Apps.Traduno.Api;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
 using Blackbird.Applications.Sdk.Common.Invocation;
 using RestSharp;
 
-namespace Apps.Appname.Connections;
+namespace Apps.Traduno.Connections;
 
 public class ConnectionValidator(InvocationContext invocationContext) : BaseInvocable(invocationContext), IConnectionValidator
 {
@@ -15,7 +15,7 @@ public class ConnectionValidator(InvocationContext invocationContext) : BaseInvo
     {
         try
         {
-            var client = new Client(authenticationCredentialsProviders);
+            var client = new TradunoClient(authenticationCredentialsProviders);
             var request = new RestRequest();
 
             var response = await client.ExecuteAsync(request, cancellationToken);

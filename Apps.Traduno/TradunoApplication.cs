@@ -1,9 +1,9 @@
-﻿using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Metadata;
 
-namespace Apps.Appname;
+namespace Apps.Traduno;
 
-public class Application : IApplication, ICategoryProvider
+public class TradunoApplication : IApplication, ICategoryProvider
 {
     public IEnumerable<ApplicationCategory> Categories
     {

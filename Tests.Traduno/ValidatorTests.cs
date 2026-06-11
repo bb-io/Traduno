@@ -1,8 +1,8 @@
-using Apps.Appname.Connections;
+using Apps.Traduno.Connections;
 using Blackbird.Applications.Sdk.Common.Authentication;
-using Tests.Appname.Base;
+using Tests.Traduno.Base;
 
-namespace Tests.Appname;
+namespace Tests.Traduno;
 
 [TestClass]
 public class ConnectionValidatorTests : TestBase

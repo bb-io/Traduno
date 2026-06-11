@@ -1,7 +1,7 @@
-﻿using Apps.Appname.Actions;
-using Tests.Appname.Base;
+using Apps.Traduno.Actions;
+using Tests.Traduno.Base;
 
-namespace Tests.Appname;
+namespace Tests.Traduno;
 
 [TestClass]
 public class ActionTests : TestBase

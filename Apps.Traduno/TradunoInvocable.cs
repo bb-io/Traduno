@@ -1,17 +1,17 @@
-using Apps.Appname.Api;
+using Apps.Traduno.Api;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Invocation;
 
-namespace Apps.Appname;
+namespace Apps.Traduno;
 
-public class Invocable : BaseInvocable
+public class TradunoInvocable : BaseInvocable
 {
     protected AuthenticationCredentialsProvider[] Creds =>
         InvocationContext.AuthenticationCredentialsProviders.ToArray();
 
-    protected Client Client { get; }
-    public Invocable(InvocationContext invocationContext) : base(invocationContext)
+    protected TradunoClient Client { get; }
+    public TradunoInvocable(InvocationContext invocationContext) : base(invocationContext)
     {
         Client = new(Creds);
     }
