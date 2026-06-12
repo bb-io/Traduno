@@ -1,4 +1,4 @@
-# Blackbird.io Traduno
+# Blackbird.io Traduno [Beta]
 
 Blackbird is the new automation backbone for the language technology industry. Blackbird provides enterprise-scale automation and orchestration with a simple no-code/low-code platform. Blackbird enables ambitious organizations to identify, vet and automate as many processes as possible. Not just localization workflows, but any business and IT process. This repository represents an application that is deployable on Blackbird and usable inside the workflow editor.
 
@@ -58,7 +58,13 @@ Before you connect the app, make sure that:
 ## Input notes
 
 - Project and quote creation support multiple deliverables. Deliverable list fields are index-based: item `1` in each deliverable input belongs to the first deliverable, item `2` to the second, and so on.
+- `Currency` is required for both project and quote creation.
+- `Translation area`, `delivery files format`, `deliverable service code groups`, `deliverable target language code groups`, and `deliverable scheduling modes` are required for both project and quote creation.
+- `Source files` are required for project creation and optional for quote creation.
+- `Deliverable source language codes` are required for quote creation and optional for project creation.
 - `Deliverable service code groups` and `Deliverable target language code groups` accept comma-separated values inside each item, for example `T,TEP` or `de-DE,fr-FR`.
+- `Deliverable deadlines` are date-time inputs used only for deliverables whose scheduling mode is `deadline`.
+- `Deliverable turnaround times` are integer inputs used only for deliverables whose scheduling mode is `turnaround`.
 - Source files are uploaded automatically inside **Create project** and **Create quote request**.
 
 ## Rate limits

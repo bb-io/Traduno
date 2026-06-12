@@ -56,13 +56,12 @@ public static class TradunoRequestMapper
             PoNumber = input.PoNumber,
             Notes = input.Notes,
             JobInstructions = input.JobInstructions,
-            TranslationAreaId = ParseNullableInt(input.TranslationAreaId, "translation area"),
-            CurrencyId = ParseNullableInt(input.CurrencyId, "currency"),
+            TranslationAreaId = ParseRequiredInt(input.TranslationAreaId, "translation area"),
+            CurrencyId = ParseRequiredInt(input.CurrencyId, "currency"),
             BillingEntityId = input.BillingEntityId,
-            CallbackUrl = input.CallbackUrl,
-            DeliveryFilesFormat = input.DeliveryFilesFormat,
+            DeliveryFilesFormat = ParseRequiredString(input.DeliveryFilesFormat, "delivery files format"),
             SourceFiles = sourceFiles,
-            Deliverables = BuildDeliverables(input)
+            Deliverables = BuildDeliverables(input, requireSourceLanguage: false, requireTargetLanguages: true)
         };
     }
 
@@ -72,24 +71,23 @@ public static class TradunoRequestMapper
         PoNumber = input.PoNumber,
         Notes = input.Notes,
         JobInstructions = input.JobInstructions,
-        TranslationAreaId = ParseNullableInt(input.TranslationAreaId, "translation area"),
-        CurrencyId = ParseNullableInt(input.CurrencyId, "currency"),
+        TranslationAreaId = ParseRequiredInt(input.TranslationAreaId, "translation area"),
+        CurrencyId = ParseRequiredInt(input.CurrencyId, "currency"),
         BillingEntityId = input.BillingEntityId,
-        CallbackUrl = input.CallbackUrl,
-        DeliveryFilesFormat = input.DeliveryFilesFormat,
+        DeliveryFilesFormat = ParseRequiredString(input.DeliveryFilesFormat, "delivery files format"),
         SourceFiles = sourceFileIds?.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray(),
-        Deliverables = BuildDeliverables(input)
+        Deliverables = BuildDeliverables(input, requireSourceLanguage: true, requireTargetLanguages: true)
     };
 
-    private static IEnumerable<CreateDeliverableRequest> BuildDeliverables(CreateTradunoEntityInputBase input)
+    private static IEnumerable<CreateDeliverableRequest>(
+        ITradunoDeliverableInput input,
+        bool requireSourceLanguage,
+        bool requireTargetLanguages)
     {
         var serviceCodeGroups = input.DeliverableServiceCodeGroups
             .Where(x => !string.IsNullOrWhiteSpace(x))
             .ToList();
         var schedulingModes = input.DeliverableSchedulingModes
-            .Where(x => !string.IsNullOrWhiteSpace(x))
-            .ToList();
-        var schedulingValues = input.DeliverableSchedulingValues
             .Where(x => !string.IsNullOrWhiteSpace(x))
             .ToList();
 
@@ -100,11 +98,12 @@ public static class TradunoRequestMapper
 
         var deliverableCount = serviceCodeGroups.Count;
         EnsureCount(nameof(input.DeliverableSchedulingModes), schedulingModes.Count, deliverableCount);
-        EnsureCount(nameof(input.DeliverableSchedulingValues), schedulingValues.Count, deliverableCount);
 
         var sourceLanguageCodes = NormalizeOptionalList(input.DeliverableSourceLanguageCodes, deliverableCount);
         var targetLanguageGroups = NormalizeOptionalList(input.DeliverableTargetLanguageCodeGroups, deliverableCount);
         var descriptions = NormalizeOptionalList(input.DeliverableDescriptions, deliverableCount);
+        var deadlines = NormalizeOptionalValueList(input.DeliverableDeadlines, deliverableCount);
+        var turnaroundTimes = NormalizeOptionalValueList(input.DeliverableTurnaroundTimes, deliverableCount);
 
         var deliverables = new List<CreateDeliverableRequest>();
         for (var index = 0; index < deliverableCount; index++)
@@ -115,36 +114,50 @@ public static class TradunoRequestMapper
                 throw new PluginApplicationException($"Deliverable {index + 1} must contain at least one service code.");
             }
 
+            var sourceLanguageCode = sourceLanguageCodes[index];
+            var targetLanguageCodes = SplitCommaSeparated(targetLanguageGroups[index]).ToArray();
+
+            if (requireSourceLanguage && string.IsNullOrWhiteSpace(sourceLanguageCode))
+            {
+                throw new PluginApplicationException($"Deliverable {index + 1} source language must be provided.");
+            }
+
+            if (requireTargetLanguages && !targetLanguageCodes.Any())
+            {
+                throw new PluginApplicationException($"Deliverable {index + 1} target language must be provided.");
+            }
+
             var deliverable = new CreateDeliverableRequest
             {
                 ServiceCodes = serviceCodes,
-                SourceLanguageCode = sourceLanguageCodes[index],
-                TargetLanguageCodes = SplitCommaSeparated(targetLanguageGroups[index]),
+                SourceLanguageCode = sourceLanguageCode,
+                TargetLanguageCodes = targetLanguageCodes,
                 Description = descriptions[index]
             };
 
             var mode = schedulingModes[index].Trim().ToLowerInvariant();
-            var value = schedulingValues[index].Trim();
 
             if (mode == "deadline")
             {
-                if (!DateTime.TryParse(value, out var deadline))
+                var deadline = deadlines[index];
+                if (!deadline.HasValue)
                 {
                     throw new PluginApplicationException(
-                        $"Deliverable {index + 1} scheduling value must be a valid date-time when mode is deadline.");
+                        $"Deliverable {index + 1} deadline must be provided when scheduling mode is deadline.");
                 }
 
-                deliverable.Deadline = deadline;
+                deliverable.Deadline = deadline.Value;
             }
             else if (mode == "turnaround")
             {
-                if (!int.TryParse(value, out var turnaroundTime))
+                var turnaroundTime = turnaroundTimes[index];
+                if (!turnaroundTime.HasValue)
                 {
                     throw new PluginApplicationException(
-                        $"Deliverable {index + 1} scheduling value must be an integer when mode is turnaround.");
+                        $"Deliverable {index + 1} turnaround time must be provided when scheduling mode is turnaround.");
                 }
 
-                deliverable.TurnaroundTime = turnaroundTime;
+                deliverable.TurnaroundTime = turnaroundTime.Value;
             }
             else
             {
@@ -175,6 +188,24 @@ public static class TradunoRequestMapper
         return list.Select(x => string.IsNullOrWhiteSpace(x) ? null : x.Trim()).ToList();
     }
 
+    private static List<T?> NormalizeOptionalValueList<T>(IEnumerable<T?>? values, int expectedCount)
+        where T : struct
+    {
+        if (values == null)
+        {
+            return Enumerable.Repeat<T?>(null, expectedCount).ToList();
+        }
+
+        var list = values.ToList();
+        if (!list.Any())
+        {
+            return Enumerable.Repeat<T?>(null, expectedCount).ToList();
+        }
+
+        EnsureCount("optional deliverable value list", list.Count, expectedCount);
+        return list;
+    }
+
     private static IEnumerable<string> SplitCommaSeparated(string? value)
     {
         if (string.IsNullOrWhiteSpace(value))
@@ -198,6 +229,31 @@ public static class TradunoRequestMapper
         }
 
         return parsed;
+    }
+
+    private static int ParseRequiredInt(string? value, string fieldName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new PluginApplicationException($"{fieldName} is required.");
+        }
+
+        if (!int.TryParse(value, out var parsed))
+        {
+            throw new PluginApplicationException($"{fieldName} must be a valid integer value.");
+        }
+
+        return parsed;
+    }
+
+    private static string ParseRequiredString(string? value, string fieldName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+        {
+            throw new PluginApplicationException($"{fieldName} is required.");
+        }
+
+        return value.Trim();
     }
 
     private static string? FormatDate(DateTime? value) => value?.ToString("yyyy-MM-dd");

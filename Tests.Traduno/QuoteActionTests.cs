@@ -50,8 +50,7 @@ public class QuoteActionTests : TestBase
             DeliverableSchedulingModes = ["turnaround"],
             CurrencyId = "978",
             TranslationAreaId = "27",
-            DeliverableSchedulingValues = ["1"],
-            DeliverableDescriptions = ["Created by automated test"],
+            DeliverableTurnaroundTimes = [1],
             SourceFiles = [CreateSampleFileReference()]
         });
 

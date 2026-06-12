@@ -52,11 +52,9 @@ public class ProjectActionTests : TestBase
                 TranslationAreaId = "27",
                 DeliveryFilesFormat = "docx",
                 DeliverableServiceCodeGroups = [deliverableData.ServiceCode],
-                DeliverableSourceLanguageCodes = [deliverableData.SourceLanguageCode],
                 DeliverableTargetLanguageCodeGroups = [deliverableData.TargetLanguageCode],
                 DeliverableSchedulingModes = ["turnaround"],
-                DeliverableSchedulingValues = ["1"],
-                DeliverableDescriptions = ["Created by automated test"]
+                DeliverableTurnaroundTimes = [1]
             });
 
             Console.WriteLine($"Created project: {result.Name} - {result.Id}");
