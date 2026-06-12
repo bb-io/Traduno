@@ -16,8 +16,6 @@ public class CreateProjectRequest
 
     public string? BillingEntityId { get; set; }
 
-    public string? CallbackUrl { get; set; }
-
     public string? DeliveryFilesFormat { get; set; }
 
     public IEnumerable<string> SourceFiles { get; set; } = [];

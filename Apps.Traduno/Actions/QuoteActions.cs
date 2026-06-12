@@ -28,7 +28,7 @@ public class QuoteActions(InvocationContext invocationContext, IFileManagementCl
         };
     }
 
-    [Action("Create quote request", Description = "Create a quote request with optional source files and one or more deliverables.")]
+    [Action("Create quote", Description = "Create a quote request with optional source files and one or more deliverables.")]
     public async Task<QuoteDto> CreateQuote([ActionParameter] CreateQuoteInput input)
     {
         var stagedFileIds = input.SourceFiles == null

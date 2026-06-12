@@ -79,7 +79,7 @@ public static class TradunoRequestMapper
         Deliverables = BuildDeliverables(input, requireSourceLanguage: true, requireTargetLanguages: true)
     };
 
-    private static IEnumerable<CreateDeliverableRequest>(
+    private static IEnumerable<CreateDeliverableRequest> BuildDeliverables(
         ITradunoDeliverableInput input,
         bool requireSourceLanguage,
         bool requireTargetLanguages)
