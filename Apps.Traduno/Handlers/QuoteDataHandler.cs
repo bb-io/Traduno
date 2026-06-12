@@ -8,7 +8,10 @@ public class QuoteDataHandler(InvocationContext invocationContext) : TradunoData
 {
     protected override async Task<IEnumerable<DataSourceItem>> GetDataInternalAsync(CancellationToken cancellationToken)
     {
-        var quotes = await Client.GetAllPaginatedAsync<QuoteDto>("/quotes", cancellationToken: cancellationToken);
+        var quotes = await Client.GetAllPaginatedAsync<QuoteDto>(
+            "/quotes",
+            new Dictionary<string, string?> { ["filter[show_all]"] = "true" },
+            cancellationToken);
         return quotes.Select(x =>
             new DataSourceItem(x.Id, string.IsNullOrWhiteSpace(x.Name) ? x.Id : $"{x.Name} ({x.Id})"));
     }

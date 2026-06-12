@@ -8,7 +8,10 @@ public class ProjectDataHandler(InvocationContext invocationContext) : TradunoDa
 {
     protected override async Task<IEnumerable<DataSourceItem>> GetDataInternalAsync(CancellationToken cancellationToken)
     {
-        var projects = await Client.GetAllPaginatedAsync<ProjectDto>("/projects", cancellationToken: cancellationToken);
+        var projects = await Client.GetAllPaginatedAsync<ProjectDto>(
+            "/projects",
+            new Dictionary<string, string?> { ["filter[show_all]"] = "true" },
+            cancellationToken);
         return projects.Select(x =>
             new DataSourceItem(x.Id, string.IsNullOrWhiteSpace(x.Name) ? x.Id : $"{x.Name} ({x.Id})"));
     }
