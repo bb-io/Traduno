@@ -7,7 +7,13 @@ public class TradunoApplication : IApplication, ICategoryProvider
 {
     public IEnumerable<ApplicationCategory> Categories
     {
-        get => [];
+        get => [ApplicationCategory.TranslationBusinessManagement];
+        set { }
+    }
+
+    public string Name
+    {
+        get => "Traduno";
         set { }
     }
 

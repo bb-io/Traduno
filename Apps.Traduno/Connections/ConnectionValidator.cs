@@ -3,7 +3,6 @@ using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
 using Blackbird.Applications.Sdk.Common.Invocation;
-using RestSharp;
 
 namespace Apps.Traduno.Connections;
 
@@ -16,21 +15,16 @@ public class ConnectionValidator(InvocationContext invocationContext) : BaseInvo
         try
         {
             var client = new TradunoClient(authenticationCredentialsProviders);
-            var request = new RestRequest();
-
-            var response = await client.ExecuteAsync(request, cancellationToken);
-
-            // Typically you'll want to use the least complex way to validate if a connection is valid.
-            var isValid = response.StatusCode != System.Net.HttpStatusCode.Unauthorized;
+            await client.GetAccountAsync(cancellationToken);
 
             return new ConnectionValidationResponse
             {
-                IsValid = isValid,
-                Message = isValid ? "Success" : (response.Content ?? response.ErrorMessage ?? response.StatusCode.ToString()),
+                IsValid = true,
+                Message = "Success"
             };
 
-        } 
-        catch(Exception ex)
+        }
+        catch (Exception ex)
         {
             InvocationContext.Logger?.LogError($"Connection validation failed: {ex.Message}", []);
 

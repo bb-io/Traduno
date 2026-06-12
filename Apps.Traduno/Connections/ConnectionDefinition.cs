@@ -1,4 +1,5 @@
 using Apps.Traduno.Constants;
+using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Connections;
 
@@ -10,11 +11,21 @@ public class ConnectionDefinition : IConnectionDefinition
     {
         new()
         {
-            Name = "Developer API key",
+            Name = "Connection",
             AuthenticationType = ConnectionAuthenticationType.Undefined,
             ConnectionProperties = new List<ConnectionProperty>
             {
-                new(CredsNames.Token) { DisplayName = "API Token", Sensitive = true}
+                new(CredsNames.Host)
+                {
+                    DisplayName = "Host",
+                    Description = "Traduno host, for example organization.traduno.com"
+                },
+                new(CredsNames.Token)
+                {
+                    DisplayName = "API token",
+                    Description = "Bearer token generated in Traduno",
+                    Sensitive = true
+                }
             }
         }
     };
