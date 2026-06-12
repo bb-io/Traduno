@@ -9,27 +9,9 @@ namespace Tests.Traduno;
 public class FileActionTests : TestBase
 {
     [TestMethod]
-    public async Task Stage_file_returns_staged_file()
-    {
-        var actions = new FileActions(InvocationContext, FileManager);
-
-        var result = await actions.StageFile(new StageFileInput
-        {
-            File = new()
-            {
-                Name = "sample-source.txt",
-                ContentType = "text/plain"
-            }
-        });
-
-        Console.WriteLine($"Staged file: {result.Name} - {result.Id} - {result.Size}");
-        Assert.IsFalse(string.IsNullOrWhiteSpace(result.Id));
-    }
-
-    [TestMethod]
     public async Task Download_delivered_file_returns_file_when_available()
     {
-        var projectActions = new ProjectActions(InvocationContext);
+        var projectActions = new ProjectActions(InvocationContext, FileManager);
         var fileActions = new FileActions(InvocationContext, FileManager);
 
         var deliveredProjects = await projectActions.SearchProjects(new SearchProjectsInput

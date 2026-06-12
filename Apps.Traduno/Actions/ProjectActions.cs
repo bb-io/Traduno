@@ -5,6 +5,7 @@ using Apps.Traduno.Models.Identifiers;
 using Apps.Traduno.Models.Requests;
 using Apps.Traduno.Models.Responses;
 using Apps.Traduno.Utils;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Exceptions;
@@ -15,7 +16,8 @@ using RestSharp;
 namespace Apps.Traduno.Actions;
 
 [ActionList("Projects")]
-public class ProjectActions(InvocationContext invocationContext) : TradunoInvocable(invocationContext)
+public class ProjectActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
+    : TradunoInvocable(invocationContext)
 {
     [Action("Search projects", Description = "Search projects using optional filters.")]
     public async Task<SearchProjectsResponse> SearchProjects([ActionParameter] SearchProjectsInput input)
@@ -27,10 +29,11 @@ public class ProjectActions(InvocationContext invocationContext) : TradunoInvoca
         };
     }
 
-    [Action("Create project", Description = "Create a project from staged source files and one or more deliverables.")]
+    [Action("Create project", Description = "Create a project from source files and one or more deliverables.")]
     public async Task<ProjectDto> CreateProject([ActionParameter] CreateProjectInput input)
     {
-        var requestBody = JsonConvert.SerializeObject(TradunoRequestMapper.BuildProjectRequest(input), JsonConfig.Settings);
+        var stagedFileIds = await StageFilesAsync(input.SourceFiles, fileManagementClient);
+        var requestBody = JsonConvert.SerializeObject(TradunoRequestMapper.BuildProjectRequest(input, stagedFileIds), JsonConfig.Settings);
         var request = new TradunoRequest("/projects", Method.Post, Creds)
             .AddStringBody(requestBody, ContentType.Json);
 

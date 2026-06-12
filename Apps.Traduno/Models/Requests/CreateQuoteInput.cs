@@ -1,6 +1,10 @@
+using Blackbird.Applications.Sdk.Common;
+using Blackbird.Applications.Sdk.Common.Files;
+
 namespace Apps.Traduno.Models.Requests;
 
 public class CreateQuoteInput : CreateTradunoEntityInputBase
 {
-    public IEnumerable<string>? SourceFileIds { get; set; }
+    [Display("Source files")]
+    public IEnumerable<FileReference>? SourceFiles { get; set; }
 }

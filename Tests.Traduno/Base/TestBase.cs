@@ -1,6 +1,4 @@
-using Apps.Traduno.Actions;
 using Apps.Traduno.Handlers;
-using Apps.Traduno.Models.Requests;
 using Blackbird.Applications.Sdk.Common.Dynamic;
 using Blackbird.Applications.Sdk.Common.Authentication;
 using Blackbird.Applications.Sdk.Common.Files;
@@ -31,19 +29,13 @@ public class TestBase
         FileManager = new FileManager();
     }
 
-    protected async Task<string> StageSampleFileAsync()
+    protected FileReference CreateSampleFileReference(string fileName = "sample-source.txt", string contentType = "text/plain")
     {
-        var actions = new FileActions(InvocationContext, FileManager);
-        var stagedFile = await actions.StageFile(new StageFileInput
+        return new FileReference
         {
-            File = new FileReference
-            {
-                Name = "sample-source.txt",
-                ContentType = "text/plain"
-            }
-        });
-
-        return stagedFile.Id;
+            Name = fileName,
+            ContentType = contentType
+        };
     }
 
     protected async Task<(string ServiceCode, string SourceLanguageCode, string TargetLanguageCode)>

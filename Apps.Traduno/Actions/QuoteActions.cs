@@ -5,6 +5,7 @@ using Apps.Traduno.Models.Identifiers;
 using Apps.Traduno.Models.Requests;
 using Apps.Traduno.Models.Responses;
 using Apps.Traduno.Utils;
+using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Common;
 using Blackbird.Applications.Sdk.Common.Actions;
 using Blackbird.Applications.Sdk.Common.Invocation;
@@ -14,7 +15,8 @@ using RestSharp;
 namespace Apps.Traduno.Actions;
 
 [ActionList("Quotes")]
-public class QuoteActions(InvocationContext invocationContext) : TradunoInvocable(invocationContext)
+public class QuoteActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
+    : TradunoInvocable(invocationContext)
 {
     [Action("Search quotes", Description = "Search quotes using optional filters.")]
     public async Task<SearchQuotesResponse> SearchQuotes([ActionParameter] SearchQuotesInput input)
@@ -26,11 +28,14 @@ public class QuoteActions(InvocationContext invocationContext) : TradunoInvocabl
         };
     }
 
-    [Action("Create quote request", Description = "Create a quote request with optional staged files and one or more deliverables.")]
+    [Action("Create quote request", Description = "Create a quote request with optional source files and one or more deliverables.")]
     public async Task<QuoteDto> CreateQuote([ActionParameter] CreateQuoteInput input)
     {
+        var stagedFileIds = input.SourceFiles == null
+            ? null
+            : await StageFilesAsync(input.SourceFiles, fileManagementClient);
         var request = new TradunoRequest("/quotes", Method.Post, Creds)
-            .AddStringBody(JsonConvert.SerializeObject(TradunoRequestMapper.BuildQuoteRequest(input), JsonConfig.Settings),
+            .AddStringBody(JsonConvert.SerializeObject(TradunoRequestMapper.BuildQuoteRequest(input, stagedFileIds), JsonConfig.Settings),
                 ContentType.Json);
 
         return await Client.ExecuteWithErrorHandling<QuoteDto>(request);

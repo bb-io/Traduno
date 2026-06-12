@@ -1,7 +1,5 @@
 using Apps.Traduno.Api;
-using Apps.Traduno.Models.Dtos;
 using Apps.Traduno.Models.Identifiers;
-using Apps.Traduno.Models.Requests;
 using Apps.Traduno.Models.Responses;
 using Blackbird.Applications.SDK.Extensions.FileManagement.Interfaces;
 using Blackbird.Applications.Sdk.Common;
@@ -18,18 +16,6 @@ namespace Apps.Traduno.Actions;
 public class FileActions(InvocationContext invocationContext, IFileManagementClient fileManagementClient)
     : TradunoInvocable(invocationContext)
 {
-    [Action("Stage file", Description = "Stage a file for project or quote creation.")]
-    public async Task<StagedFileDto> StageFile([ActionParameter] StageFileInput input)
-    {
-        var file = await fileManagementClient.DownloadAsync(input.File);
-
-        var request = new TradunoRequest("/files", Method.Post, Creds);
-        request.AlwaysMultipartFormData = true;
-        request.AddFile("file", () => file, input.File.Name);
-
-        return await Client.ExecuteWithErrorHandling<StagedFileDto>(request);
-    }
-
     [Action("Download delivered file", Description = "Download a delivered project file.")]
     public async Task<FileResponse> DownloadDeliveredFile([ActionParameter] DeliveredFileIdentifier input)
     {

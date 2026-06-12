@@ -11,7 +11,7 @@ public class ProjectActionTests : TestBase
     [TestMethod]
     public async Task Search_projects_returns_collection()
     {
-        var actions = new ProjectActions(InvocationContext);
+        var actions = new ProjectActions(InvocationContext, FileManager);
 
         var result = await actions.SearchProjects(new SearchProjectsInput());
 
@@ -26,7 +26,7 @@ public class ProjectActionTests : TestBase
     [TestMethod]
     public async Task Get_project_returns_project_when_any_project_exists()
     {
-        var actions = new ProjectActions(InvocationContext);
+        var actions = new ProjectActions(InvocationContext, FileManager);
 
         var result = await actions.GetProject(new ProjectIdentifier { ProjectId = "3928015421" });
 
@@ -37,8 +37,7 @@ public class ProjectActionTests : TestBase
     [TestMethod]
     public async Task Create_project_returns_created_project_when_account_allows_it()
     {
-        var actions = new ProjectActions(InvocationContext);
-        var stagedFileId = await StageSampleFileAsync();
+        var actions = new ProjectActions(InvocationContext, FileManager);
         var deliverableData = await GetDeliverableDataAsync();
 
         try
@@ -48,7 +47,7 @@ public class ProjectActionTests : TestBase
             {
                 Name = $"BB test project {uniqueSuffix}",
                 PoNumber = $"BB-{uniqueSuffix}",
-                SourceFileIds = [stagedFileId],
+                SourceFiles = [CreateSampleFileReference()],
                 CurrencyId = "978",
                 TranslationAreaId = "27",
                 DeliveryFilesFormat = "docx",

@@ -6,7 +6,7 @@ Blackbird is the new automation backbone for the language technology industry. B
 
 <!-- begin docs -->
 
-Traduno Customer Portal is a customer-facing translation portal API for managing projects, quotes, files, invoices, and reference data. This Blackbird app focuses on the customer portal workflow: stage files, create quote requests or projects, search existing records, and download delivered or invoicing documents.
+Traduno Customer Portal is a customer-facing translation portal API for managing projects, quotes, files, invoices, and reference data. This Blackbird app focuses on the customer portal workflow: create quote requests or projects with uploaded source files, search existing records, and download delivered or invoicing documents.
 
 ## Before setting up
 
@@ -29,22 +29,26 @@ Before you connect the app, make sure that:
 ### Projects
 
 - **Search projects** searches projects with optional status, service, translation area, PO number, created date, deadline date, and visibility filters.
-- **Create project** creates a project from staged file IDs and one or more deliverables.
+- **Create project** creates a project from uploaded source files and one or more deliverables.
 - **Get project** retrieves a project by ID.
 
 ### Quotes
 
 - **Search quotes** searches quotes with optional status, service, translation area, PO number, created date, deadline date, and visibility filters.
-- **Create quote request** creates a quote request with optional staged file IDs and one or more deliverables.
+- **Create quote request** creates a quote request with optional uploaded source files and one or more deliverables.
 - **Get quote** retrieves a quote by ID.
 - **Accept quote** accepts an estimated quote and returns the updated quote.
 - **Reject quote** rejects a quote with a reject message and returns the updated quote.
 
 ### Files
 
-- **Stage file** uploads a file to Traduno and returns the staged file ID required for project or quote creation.
 - **Download delivered file** downloads a delivered project file.
 - **Download invoice document** downloads an invoice PDF.
+
+## Events
+
+- **On project status changed** polls a specific project and triggers when its status changes.
+- **On quote status changed** polls a specific quote and triggers when its status changes.
 
 ### Invoices
 
@@ -55,7 +59,7 @@ Before you connect the app, make sure that:
 
 - Project and quote creation support multiple deliverables. Deliverable list fields are index-based: item `1` in each deliverable input belongs to the first deliverable, item `2` to the second, and so on.
 - `Deliverable service code groups` and `Deliverable target language code groups` accept comma-separated values inside each item, for example `T,TEP` or `de-DE,fr-FR`.
-- Use **Stage file** first, then pass the returned staged file IDs into **Create project** or **Create quote request**.
+- Source files are uploaded automatically inside **Create project** and **Create quote request**.
 
 ## Rate limits
 
@@ -63,7 +67,9 @@ Traduno returns `429 Too Many Requests` when the rate limit is exceeded. This ap
 
 ## Notes
 
-- This version implements the requested action surface. No events are included in the current repo state.
+- Polling events watch a single project or quote by ID.
+- Polling memory stores the last checked timestamp, the entity ID, and the last seen status.
+- When a polling status filter is provided, the event triggers only when the new current status matches that filter.
 
 ## Feedback
 

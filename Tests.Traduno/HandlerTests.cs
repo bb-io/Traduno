@@ -86,7 +86,7 @@ public class HandlerTests : TestBase
     [TestMethod]
     public async Task Delivered_file_handler_returns_values_for_delivered_project_when_available()
     {
-        var actions = new ProjectActions(InvocationContext);
+        var actions = new ProjectActions(InvocationContext, FileManager);
         var deliveredProjects = await actions.SearchProjects(new SearchProjectsInput
         {
             Status = "delivered",

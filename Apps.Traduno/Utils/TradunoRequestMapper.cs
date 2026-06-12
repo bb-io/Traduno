@@ -42,12 +42,12 @@ public static class TradunoRequestMapper
         { "filter[deadline_end]", FormatDate(input.DeadlineEnd) }
     };
 
-    public static CreateProjectRequest BuildProjectRequest(CreateProjectInput input)
+    public static CreateProjectRequest BuildProjectRequest(CreateProjectInput input, IEnumerable<string> sourceFileIds)
     {
-        var sourceFileIds = input.SourceFileIds?.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray() ?? [];
-        if (!sourceFileIds.Any())
+        var sourceFiles = sourceFileIds.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray();
+        if (!sourceFiles.Any())
         {
-            throw new PluginApplicationException("At least one source file ID is required to create a project.");
+            throw new PluginApplicationException("At least one source file is required to create a project.");
         }
 
         return new CreateProjectRequest
@@ -61,12 +61,12 @@ public static class TradunoRequestMapper
             BillingEntityId = input.BillingEntityId,
             CallbackUrl = input.CallbackUrl,
             DeliveryFilesFormat = input.DeliveryFilesFormat,
-            SourceFiles = sourceFileIds,
+            SourceFiles = sourceFiles,
             Deliverables = BuildDeliverables(input)
         };
     }
 
-    public static CreateQuoteRequest BuildQuoteRequest(CreateQuoteInput input) => new()
+    public static CreateQuoteRequest BuildQuoteRequest(CreateQuoteInput input, IEnumerable<string>? sourceFileIds) => new()
     {
         Name = input.Name,
         PoNumber = input.PoNumber,
@@ -77,7 +77,7 @@ public static class TradunoRequestMapper
         BillingEntityId = input.BillingEntityId,
         CallbackUrl = input.CallbackUrl,
         DeliveryFilesFormat = input.DeliveryFilesFormat,
-        SourceFiles = input.SourceFileIds?.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray(),
+        SourceFiles = sourceFileIds?.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray(),
         Deliverables = BuildDeliverables(input)
     };
 

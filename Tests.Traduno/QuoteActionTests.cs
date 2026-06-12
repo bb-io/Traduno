@@ -11,7 +11,7 @@ public class QuoteActionTests : TestBase
     [TestMethod]
     public async Task Search_quotes_returns_collection()
     {
-        var actions = new QuoteActions(InvocationContext);
+        var actions = new QuoteActions(InvocationContext, FileManager);
 
         var result = await actions.SearchQuotes(new SearchQuotesInput());
 
@@ -26,7 +26,7 @@ public class QuoteActionTests : TestBase
     [TestMethod]
     public async Task Get_quote_returns_quote_when_any_quote_exists()
     {
-        var actions = new QuoteActions(InvocationContext);
+        var actions = new QuoteActions(InvocationContext, FileManager);
 
         var result = await actions.GetQuote(new QuoteIdentifier { QuoteId = "8520944231" });
 
@@ -37,7 +37,7 @@ public class QuoteActionTests : TestBase
     [TestMethod]
     public async Task Create_quote_request_returns_created_quote()
     {
-        var actions = new QuoteActions(InvocationContext);
+        var actions = new QuoteActions(InvocationContext, FileManager);
         var deliverableData = await GetDeliverableDataAsync();
 
         var result = await actions.CreateQuote(new CreateQuoteInput
@@ -52,7 +52,7 @@ public class QuoteActionTests : TestBase
             TranslationAreaId = "27",
             DeliverableSchedulingValues = ["1"],
             DeliverableDescriptions = ["Created by automated test"],
-            SourceFileIds = ["2560446103"]
+            SourceFiles = [CreateSampleFileReference()]
         });
 
         Console.WriteLine($"Created quote: {result.Name} - {result.Id} - {result.Status}");
@@ -62,7 +62,7 @@ public class QuoteActionTests : TestBase
     [TestMethod]
     public async Task Reject_quote_returns_rejected_quote_for_new_quote()
     {
-        var actions = new QuoteActions(InvocationContext);
+        var actions = new QuoteActions(InvocationContext, FileManager);
        
         var result = await actions.RejectQuote(new QuoteIdentifier { QuoteId = "8520944231" }, new RejectQuoteInput
         {
@@ -76,7 +76,7 @@ public class QuoteActionTests : TestBase
     [TestMethod]
     public async Task Accept_quote_returns_converted_quote_when_estimated_quote_exists()
     {
-        var actions = new QuoteActions(InvocationContext);
+        var actions = new QuoteActions(InvocationContext, FileManager);
         var result = await actions.AcceptQuote(new QuoteIdentifier { QuoteId = "8520944231" });
 
         Console.WriteLine($"Accepted quote: {result.Name} - {result.Id} - {result.Status}");
