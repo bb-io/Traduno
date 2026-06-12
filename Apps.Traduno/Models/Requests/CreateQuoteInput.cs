@@ -7,7 +7,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.Traduno.Models.Requests;
 
-public class CreateQuoteInput : ITradunoDeliverableInput
+public class CreateQuoteInput
 {
     public string? Name { get; set; }
 

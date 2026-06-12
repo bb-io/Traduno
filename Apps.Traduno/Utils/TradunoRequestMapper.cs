@@ -61,7 +61,16 @@ public static class TradunoRequestMapper
             BillingEntityId = input.BillingEntityId,
             DeliveryFilesFormat = ParseRequiredString(input.DeliveryFilesFormat, "delivery files format"),
             SourceFiles = sourceFiles,
-            Deliverables = BuildDeliverables(input, requireSourceLanguage: false, requireTargetLanguages: true)
+            Deliverables = BuildDeliverables(
+                input.DeliverableServiceCodeGroups,
+                input.DeliverableSourceLanguageCodes,
+                input.DeliverableTargetLanguageCodeGroups,
+                input.DeliverableSchedulingModes,
+                input.DeliverableDeadlines,
+                input.DeliverableTurnaroundTimes,
+                input.DeliverableDescriptions,
+                requireSourceLanguage: false,
+                requireTargetLanguages: true)
         };
     }
 
@@ -76,18 +85,33 @@ public static class TradunoRequestMapper
         BillingEntityId = input.BillingEntityId,
         DeliveryFilesFormat = ParseRequiredString(input.DeliveryFilesFormat, "delivery files format"),
         SourceFiles = sourceFileIds?.Where(x => !string.IsNullOrWhiteSpace(x)).ToArray(),
-        Deliverables = BuildDeliverables(input, requireSourceLanguage: true, requireTargetLanguages: true)
+        Deliverables = BuildDeliverables(
+            input.DeliverableServiceCodeGroups,
+            input.DeliverableSourceLanguageCodes,
+            input.DeliverableTargetLanguageCodeGroups,
+            input.DeliverableSchedulingModes,
+            input.DeliverableDeadlines,
+            input.DeliverableTurnaroundTimes,
+            input.DeliverableDescriptions,
+            requireSourceLanguage: true,
+            requireTargetLanguages: true)
     };
 
     private static IEnumerable<CreateDeliverableRequest> BuildDeliverables(
-        ITradunoDeliverableInput input,
+        IEnumerable<string> deliverableServiceCodeGroups,
+        IEnumerable<string>? deliverableSourceLanguageCodes,
+        IEnumerable<string> deliverableTargetLanguageCodeGroups,
+        IEnumerable<string> deliverableSchedulingModes,
+        IEnumerable<DateTime?>? deliverableDeadlines,
+        IEnumerable<int?>? deliverableTurnaroundTimes,
+        IEnumerable<string>? deliverableDescriptions,
         bool requireSourceLanguage,
         bool requireTargetLanguages)
     {
-        var serviceCodeGroups = input.DeliverableServiceCodeGroups
+        var serviceCodeGroups = deliverableServiceCodeGroups
             .Where(x => !string.IsNullOrWhiteSpace(x))
             .ToList();
-        var schedulingModes = input.DeliverableSchedulingModes
+        var schedulingModes = deliverableSchedulingModes
             .Where(x => !string.IsNullOrWhiteSpace(x))
             .ToList();
 
@@ -97,13 +121,13 @@ public static class TradunoRequestMapper
         }
 
         var deliverableCount = serviceCodeGroups.Count;
-        EnsureCount(nameof(input.DeliverableSchedulingModes), schedulingModes.Count, deliverableCount);
+        EnsureCount("deliverable scheduling modes", schedulingModes.Count, deliverableCount);
 
-        var sourceLanguageCodes = NormalizeOptionalList(input.DeliverableSourceLanguageCodes, deliverableCount);
-        var targetLanguageGroups = NormalizeOptionalList(input.DeliverableTargetLanguageCodeGroups, deliverableCount);
-        var descriptions = NormalizeOptionalList(input.DeliverableDescriptions, deliverableCount);
-        var deadlines = NormalizeOptionalValueList(input.DeliverableDeadlines, deliverableCount);
-        var turnaroundTimes = NormalizeOptionalValueList(input.DeliverableTurnaroundTimes, deliverableCount);
+        var sourceLanguageCodes = NormalizeOptionalList(deliverableSourceLanguageCodes, deliverableCount);
+        var targetLanguageGroups = NormalizeOptionalList(deliverableTargetLanguageCodeGroups, deliverableCount);
+        var descriptions = NormalizeOptionalList(deliverableDescriptions, deliverableCount);
+        var deadlines = NormalizeOptionalValueList(deliverableDeadlines, deliverableCount);
+        var turnaroundTimes = NormalizeOptionalValueList(deliverableTurnaroundTimes, deliverableCount);
 
         var deliverables = new List<CreateDeliverableRequest>();
         for (var index = 0; index < deliverableCount; index++)

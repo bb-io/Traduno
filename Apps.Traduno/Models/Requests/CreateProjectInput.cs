@@ -7,7 +7,7 @@ using Blackbird.Applications.Sdk.Common.Dynamic;
 
 namespace Apps.Traduno.Models.Requests;
 
-public class CreateProjectInput : ITradunoDeliverableInput
+public class CreateProjectInput
 {
     public string? Name { get; set; }
 
