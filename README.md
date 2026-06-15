@@ -35,7 +35,7 @@ Before you connect the app, make sure that:
 ### Quotes
 
 - **Search quotes** searches quotes with optional status, service, translation area, PO number, created date, deadline date, and visibility filters.
-- **Create quote request** creates a quote request with optional uploaded source files and one or more deliverables.
+- **Create quote** creates a quote request with optional uploaded source files and one or more deliverables.
 - **Get quote** retrieves a quote by ID.
 - **Accept quote** accepts an estimated quote and returns the updated quote.
 - **Reject quote** rejects a quote with a reject message and returns the updated quote.
@@ -45,7 +45,7 @@ Before you connect the app, make sure that:
 - **Download delivered file** downloads a delivered project file.
 - **Download invoice document** downloads an invoice PDF.
 
-## Events
+### Events
 
 - **On project status changed** polls a specific project and triggers when its status changes.
 - **On quote status changed** polls a specific quote and triggers when its status changes.
@@ -66,16 +66,6 @@ Before you connect the app, make sure that:
 - `Deliverable deadlines` are date-time inputs used only for deliverables whose scheduling mode is `deadline`.
 - `Deliverable turnaround times` are integer inputs used only for deliverables whose scheduling mode is `turnaround`.
 - Source files are uploaded automatically inside **Create project** and **Create quote request**.
-
-## Rate limits
-
-Traduno returns `429 Too Many Requests` when the rate limit is exceeded. This app retries automatically and respects the `Retry-After` response header when it is present.
-
-## Notes
-
-- Polling events watch a single project or quote by ID.
-- Polling memory stores the last checked timestamp, the entity ID, and the last seen status.
-- When a polling status filter is provided, the event triggers only when the new current status matches that filter.
 
 ## Feedback
 
