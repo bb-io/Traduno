@@ -28,7 +28,7 @@ public class ProjectActionTests : TestBase
     {
         var actions = new ProjectActions(InvocationContext, FileManager);
 
-        var result = await actions.GetProject(new ProjectIdentifier { ProjectId = "3928015421" });
+        var result = await actions.GetProject(new ProjectIdentifier { ProjectId = "1488867029" });
 
         Console.WriteLine($"Project: {result.Name} - {result.Id}");
         Assert.IsNotNull(result);

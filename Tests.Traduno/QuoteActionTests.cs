@@ -45,7 +45,7 @@ public class QuoteActionTests : TestBase
             Name = $"BB aa test quote {DateTime.UtcNow:yyyyMMddHHmmss}",
             DeliveryFilesFormat = "docx", //need
             DeliverableServiceCodeGroups = [deliverableData.ServiceCode], //need
-            //DeliverableSourceLanguageCodes = [deliverableData.SourceLanguageCode], //needed
+            DeliverableSourceLanguageCodes = [deliverableData.SourceLanguageCode], //needed
             DeliverableTargetLanguageCodeGroups = [deliverableData.TargetLanguageCode], //need
             DeliverableSchedulingModes = ["turnaround"],
             CurrencyId = "978",// need
@@ -64,7 +64,7 @@ public class QuoteActionTests : TestBase
     {
         var actions = new QuoteActions(InvocationContext, FileManager);
        
-        var result = await actions.RejectQuote(new QuoteIdentifier { QuoteId = "8520944231" }, new RejectQuoteInput
+        var result = await actions.RejectQuote(new QuoteIdentifier { QuoteId = "1894293205" }, new RejectQuoteInput
         {
             RejectMessage = "Rejected by automated test"
         });
