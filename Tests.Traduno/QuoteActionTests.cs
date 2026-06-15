@@ -43,14 +43,15 @@ public class QuoteActionTests : TestBase
         var result = await actions.CreateQuote(new CreateQuoteInput
         {
             Name = $"BB aa test quote {DateTime.UtcNow:yyyyMMddHHmmss}",
-            DeliveryFilesFormat = "docx",
-            DeliverableServiceCodeGroups = [deliverableData.ServiceCode],
-            DeliverableSourceLanguageCodes = [deliverableData.SourceLanguageCode],
-            DeliverableTargetLanguageCodeGroups = [deliverableData.TargetLanguageCode],
+            DeliveryFilesFormat = "docx", //need
+            DeliverableServiceCodeGroups = [deliverableData.ServiceCode], //need
+            //DeliverableSourceLanguageCodes = [deliverableData.SourceLanguageCode], //needed
+            DeliverableTargetLanguageCodeGroups = [deliverableData.TargetLanguageCode], //need
             DeliverableSchedulingModes = ["turnaround"],
-            CurrencyId = "978",
-            TranslationAreaId = "27",
-            DeliverableTurnaroundTimes = [1],
+            CurrencyId = "978",// need
+            TranslationAreaId = "27", //need
+            DeliverableTurnaroundTimes = [1], //Deliverable 1 turnaround time must be provided when scheduling mode is turnaround.
+            //DeliverableDescriptions = ["Created by automated test"], // not need
             SourceFiles = [CreateSampleFileReference()]
         });
 

@@ -9,6 +9,15 @@ public class LanguageDataHandler(InvocationContext invocationContext) : TradunoD
     protected override async Task<IEnumerable<DataSourceItem>> GetDataInternalAsync(CancellationToken cancellationToken)
     {
         var languages = await Client.GetAllPaginatedAsync<LanguageDto>("/languages", cancellationToken: cancellationToken);
-        return languages.Select(x => new DataSourceItem(x.Code, $"{x.Name} ({x.Code})"));
+        return languages
+            .Where(x => !string.IsNullOrWhiteSpace(x.Code))
+            .GroupBy(x => x.Code.Trim(), StringComparer.OrdinalIgnoreCase)
+            .Select(group =>
+            {
+                var language = group.First();
+                var code = language.Code.Trim();
+                return new DataSourceItem(code, $"{language.Name} ({code})");
+            })
+            .OrderBy(x => x.DisplayName);
     }
 }
