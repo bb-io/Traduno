@@ -5,8 +5,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Product>Traduno [Beta]</Product>
-        <Description>Description</Description>
-        <Version>1.0.1</Version>
+        <Description>Traduno Customer Portal. Allows clients to create and manage translation projects, quotes, and invoices.</Description>
+        <Version>1.0.2</Version>
         <AssemblyName>Apps.Traduno</AssemblyName>
     </PropertyGroup>
 
@@ -15,4 +15,8 @@
         <PackageReference Include="Blackbird.Applications.Sdk.Utils" Version="1.1.0-rc.8709" />
         <PackageReference Include="Polly" Version="8.5.2" />
     </ItemGroup>
+
+	<ItemGroup>
+		<EmbeddedResource CopyToOutputDirectory="Always" Include="image\icon.png" />
+	</ItemGroup>
 </Project>
