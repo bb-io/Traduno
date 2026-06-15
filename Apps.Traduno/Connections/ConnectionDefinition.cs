@@ -17,7 +17,7 @@ public class ConnectionDefinition : IConnectionDefinition
             {
                 new(CredsNames.Host)
                 {
-                    DisplayName = "Host",
+                    DisplayName = "Domain",
                     Description = "Traduno host, for example organization.traduno.com"
                 },
                 new(CredsNames.Token)

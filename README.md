@@ -20,7 +20,7 @@ Before you connect the app, make sure that:
 
 1. Add the Traduno app to your Blackbird environment.
 2. Create a connection.
-3. Enter the Traduno host without any path suffix, for example `organization.traduno.com`.
+3. Enter the Traduno domain without any path suffix, for example `organization.traduno.com`.
 4. Enter your Traduno API token.
 5. Save the connection. The app validates it against `GET /account`.
 
