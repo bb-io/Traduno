@@ -5,7 +5,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <Product>Traduno [Beta]</Product>
-        <Description>Description</Description>
+        <Description>Manage translation projects from start to finish. Create jobs, assign linguists, set deadlines, and track progress with ease.</Description>
         <Version>1.0.2</Version>
         <AssemblyName>Apps.Traduno</AssemblyName>
     </PropertyGroup>
