@@ -1,0 +1,1 @@
+This is a sample file used by FileActionTests.Stage_file_returns_staged_file.
