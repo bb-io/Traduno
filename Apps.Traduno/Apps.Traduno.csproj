@@ -6,7 +6,7 @@
         <Nullable>enable</Nullable>
         <Product>Traduno [Beta]</Product>
         <Description>Traduno Customer Portal. Allows clients to create and manage translation projects, quotes, and invoices.</Description>
-        <Version>1.0.2</Version>
+        <Version>1.0.3</Version>
         <AssemblyName>Apps.Traduno</AssemblyName>
     </PropertyGroup>
 
@@ -19,4 +19,8 @@
 	<ItemGroup>
 		<EmbeddedResource CopyToOutputDirectory="Always" Include="image\icon.png" />
 	</ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="..\README.md" Link="README.md" CopyToOutputDirectory="Always" />
+    </ItemGroup>
 </Project>
